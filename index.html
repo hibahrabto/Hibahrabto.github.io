@@ -1,10 +1,626 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Hibah Rabto | GIS Portfolio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="GIS and urban planning portfolio by Hibah Rabto." />
+  <title>Hibah Rabto | GIS & Urban Planning</title>
+
+  <style>
+    :root{
+      --bg:#F4F2EA;
+      --paper:#FBFAF6;
+      --sage:#B7C8B0;
+      --sage-2:#D8E2D3;
+      --deep:#26372D;
+      --moss:#6F836F;
+      --line:#CBD5C8;
+      --muted:#6E786F;
+      --white:#FFFFFF;
+      --shadow:0 18px 45px rgba(38,55,45,.08);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:var(--bg);
+      color:var(--deep);
+      line-height:1.6;
+    }
+
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+
+    .wrap{
+      width:min(1180px, calc(100% - 40px));
+      margin:0 auto;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter:blur(12px);
+      background:rgba(244,242,234,.86);
+      border-bottom:1px solid rgba(38,55,45,.08);
+    }
+
+    nav{
+      min-height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+    }
+
+    .brand{
+      font-size:.95rem;
+      font-weight:700;
+      letter-spacing:.12em;
+    }
+
+    .navlinks{
+      display:flex;
+      gap:24px;
+      font-size:.92rem;
+      color:var(--muted);
+    }
+
+    .navlinks a:hover{color:var(--deep)}
+
+    .hero{
+      min-height:82vh;
+      display:grid;
+      grid-template-columns:1.25fr .75fr;
+      align-items:center;
+      gap:56px;
+      padding:78px 0 88px;
+    }
+
+    .eyebrow{
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-size:.78rem;
+      color:var(--moss);
+      margin-bottom:18px;
+    }
+
+    h1{
+      margin:0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight:500;
+      font-size:clamp(3.2rem, 7vw, 6.7rem);
+      line-height:.94;
+      letter-spacing:-.045em;
+    }
+
+    .accent{color:var(--moss)}
+
+    .intro{
+      margin-top:28px;
+      max-width:680px;
+      font-size:1.15rem;
+      color:#4D5A50;
+    }
+
+    .hero-actions{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top:34px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:13px 18px;
+      border-radius:999px;
+      border:1px solid var(--deep);
+      font-size:.92rem;
+      transition:.2s ease;
+    }
+
+    .btn.primary{
+      background:var(--deep);
+      color:var(--paper);
+    }
+
+    .btn:hover{transform:translateY(-2px)}
+
+    .map-card{
+      position:relative;
+      min-height:480px;
+      border-radius:30px;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(255,255,255,.42), transparent 28%),
+        linear-gradient(145deg, var(--sage-2), var(--sage));
+      box-shadow:var(--shadow);
+    }
+
+    .map-lines{
+      position:absolute;
+      inset:0;
+      opacity:.68;
+      background-image:
+        linear-gradient(35deg, transparent 48%, rgba(38,55,45,.12) 49%, rgba(38,55,45,.12) 51%, transparent 52%),
+        linear-gradient(-22deg, transparent 47%, rgba(38,55,45,.10) 48%, rgba(38,55,45,.10) 50%, transparent 51%);
+      background-size:90px 90px, 130px 130px;
+    }
+
+    .route{
+      position:absolute;
+      left:15%;
+      top:18%;
+      width:70%;
+      height:60%;
+      border:2px solid rgba(38,55,45,.48);
+      border-radius:46% 54% 38% 62% / 60% 33% 67% 40%;
+      transform:rotate(-12deg);
+    }
+
+    .route.two{
+      left:28%;
+      top:31%;
+      width:48%;
+      height:42%;
+      border-color:rgba(38,55,45,.25);
+      transform:rotate(21deg);
+    }
+
+    .point{
+      position:absolute;
+      width:13px;
+      height:13px;
+      background:var(--deep);
+      border-radius:50%;
+      box-shadow:0 0 0 7px rgba(38,55,45,.10);
+    }
+
+    .point.p1{left:28%;top:33%}
+    .point.p2{right:22%;top:44%}
+    .point.p3{left:43%;bottom:24%}
+
+    .map-label{
+      position:absolute;
+      left:28px;
+      bottom:24px;
+      font-size:.8rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    section{
+      padding:96px 0;
+      border-top:1px solid rgba(38,55,45,.09);
+    }
+
+    .section-head{
+      display:grid;
+      grid-template-columns:140px 1fr;
+      gap:32px;
+      margin-bottom:46px;
+    }
+
+    .section-no{
+      color:var(--moss);
+      font-size:.86rem;
+      letter-spacing:.12em;
+    }
+
+    h2{
+      margin:0;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:clamp(2.2rem, 4vw, 4rem);
+      font-weight:500;
+      line-height:1.08;
+    }
+
+    .about-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:48px;
+    }
+
+    .about-grid p{
+      margin:0;
+      font-size:1.04rem;
+      color:#4D5A50;
+    }
+
+    .interest-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:28px;
+    }
+
+    .pill{
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      font-size:.85rem;
+      background:rgba(255,255,255,.32);
+    }
+
+    .projects{
+      display:grid;
+      gap:72px;
+    }
+
+    .project{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:44px;
+      align-items:center;
+    }
+
+    .project:nth-child(even){
+      grid-template-columns:.85fr 1.15fr;
+    }
+
+    .project:nth-child(even) .project-visual{order:2}
+
+    .project-visual{
+      min-height:380px;
+      border-radius:24px;
+      background:linear-gradient(135deg, #C8D6C1, #E7ECE3);
+      position:relative;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+
+    .project-visual::before,
+    .project-visual::after{
+      content:"";
+      position:absolute;
+      inset:auto;
+      border:1px solid rgba(38,55,45,.28);
+      border-radius:50%;
+    }
+
+    .project-visual::before{
+      width:280px;height:220px;
+      left:12%;top:18%;
+      transform:rotate(-18deg);
+    }
+
+    .project-visual::after{
+      width:340px;height:260px;
+      right:-8%;bottom:-6%;
+      transform:rotate(14deg);
+    }
+
+    .placeholder{
+      position:absolute;
+      left:24px;
+      bottom:20px;
+      font-size:.78rem;
+      text-transform:uppercase;
+      letter-spacing:.13em;
+      color:#405044;
+    }
+
+    .project-kicker{
+      font-size:.78rem;
+      letter-spacing:.14em;
+      color:var(--moss);
+      text-transform:uppercase;
+    }
+
+    .project h3{
+      margin:8px 0 16px;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:clamp(2rem, 3vw, 3.2rem);
+      font-weight:500;
+      line-height:1.05;
+    }
+
+    .project p{color:#536057}
+
+    .meta{
+      margin-top:22px;
+      font-size:.86rem;
+      color:var(--muted);
+    }
+
+    .coming{
+      display:inline-block;
+      margin-top:18px;
+      font-size:.84rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      border-bottom:1px solid currentColor;
+    }
+
+    .skills-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+
+    .skill-card{
+      padding:26px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:rgba(255,255,255,.28);
+    }
+
+    .skill-card h3{
+      margin:0 0 8px;
+      font-size:1rem;
+    }
+
+    .skill-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .contact{
+      background:var(--deep);
+      color:var(--paper);
+      border-top:none;
+    }
+
+    .contact .section-no{color:#B8C9B2}
+    .contact p{
+      max-width:700px;
+      color:#DCE4DC;
+      font-size:1.05rem;
+    }
+
+    .contact-links{
+      display:flex;
+      gap:26px;
+      flex-wrap:wrap;
+      margin-top:28px;
+    }
+
+    .contact-links a{
+      border-bottom:1px solid rgba(255,255,255,.45);
+      padding-bottom:3px;
+    }
+
+    footer{
+      background:var(--deep);
+      color:#AFC0B2;
+      padding:28px 0 34px;
+      font-size:.8rem;
+    }
+
+    @media (max-width: 850px){
+      .navlinks{display:none}
+      .hero,
+      .about-grid,
+      .project,
+      .project:nth-child(even),
+      .skills-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hero{
+        padding-top:58px;
+        gap:34px;
+      }
+
+      .map-card{min-height:340px}
+      .section-head{grid-template-columns:1fr;gap:10px}
+      .project:nth-child(even) .project-visual{order:0}
+      section{padding:72px 0}
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Hibah Rabto</h1>
-    <p>GIS portfolio is working! 🌿🗺️</p>
+
+  <div class="topbar">
+    <div class="wrap">
+      <nav>
+        <a class="brand" href="#top">HIBAH RABTO</a>
+        <div class="navlinks">
+          <a href="#about">About</a>
+          <a href="#work">Selected Work</a>
+          <a href="#interests">Interests</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <main id="top">
+    <div class="wrap">
+      <section class="hero" style="border-top:none;">
+        <div>
+          <div class="eyebrow">Urban Planning · GIS · Geospatial Analysis</div>
+          <h1>Exploring places,<br><span class="accent">patterns & people.</span></h1>
+          <p class="intro">
+            I explore how geospatial methods can help us understand cities, identify spatial patterns
+            and support more sustainable, inclusive and informed planning.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#work">View selected work</a>
+            <a class="btn" href="#about">About me</a>
+          </div>
+        </div>
+
+        <div class="map-card" aria-label="Abstract urban map illustration">
+          <div class="map-lines"></div>
+          <div class="route"></div>
+          <div class="route two"></div>
+          <div class="point p1"></div>
+          <div class="point p2"></div>
+          <div class="point p3"></div>
+          <div class="map-label">Spatial stories / 2026</div>
+        </div>
+      </section>
+    </div>
+
+    <section id="about">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-no">01 / ABOUT</div>
+          <h2>Planning with a spatial perspective.</h2>
+        </div>
+
+        <div class="about-grid">
+          <p>
+            I have a background in urban and regional planning and am developing a deeper specialization
+            in GIS and geospatial analysis. My interests sit at the intersection of people, place,
+            planning and data.
+          </p>
+
+          <div>
+            <p>
+              This portfolio documents selected projects, analyses and maps that explore how geographic
+              information can be used to understand complex societal questions and contribute to better
+              planning and decision-making.
+            </p>
+
+            <div class="interest-list">
+              <span class="pill">Urban Planning</span>
+              <span class="pill">Spatial Analysis</span>
+              <span class="pill">Accessibility</span>
+              <span class="pill">Participatory GIS</span>
+              <span class="pill">Sustainable Development</span>
+              <span class="pill">Remote Sensing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="work">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-no">02 / WORK</div>
+          <h2>Selected GIS projects.</h2>
+        </div>
+
+        <div class="projects">
+          <article class="project">
+            <div class="project-visual">
+              <div class="placeholder">Your future map / project image</div>
+            </div>
+            <div>
+              <div class="project-kicker">Project 01 · Spatial Analysis</div>
+              <h3>Accessibility & urban mobility</h3>
+              <p>
+                A future project exploring how spatial analysis can reveal differences in access to
+                transport, services or other urban opportunities.
+              </p>
+              <div class="meta">QGIS / ArcGIS Pro · Network Analysis · Geodata</div>
+              <span class="coming">Coming during 2026/27</span>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-visual">
+              <div class="placeholder">Your future map / project image</div>
+            </div>
+            <div>
+              <div class="project-kicker">Project 02 · Remote Sensing</div>
+              <h3>Urban environments from above</h3>
+              <p>
+                A future project using satellite data and remote sensing methods to study land cover,
+                vegetation, environmental change or other spatial patterns.
+              </p>
+              <div class="meta">Remote Sensing · Satellite Data · Raster Analysis</div>
+              <span class="coming">Coming during 2026/27</span>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-visual">
+              <div class="placeholder">Your future map / project image</div>
+            </div>
+            <div>
+              <div class="project-kicker">Project 03 · Participatory GIS</div>
+              <h3>People, place & participation</h3>
+              <p>
+                A future project exploring how geospatial information and citizen-generated data can
+                complement traditional approaches to public participation and planning.
+              </p>
+              <div class="meta">Participatory GIS · Crowdsourced Data · Urban Planning</div>
+              <span class="coming">Coming during 2026/27</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="interests">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-no">03 / FOCUS</div>
+          <h2>Areas I want to explore further.</h2>
+        </div>
+
+        <div class="skills-grid">
+          <div class="skill-card">
+            <h3>Spatial decision support</h3>
+            <p>Using GIS to structure, analyse and communicate complex planning questions.</p>
+          </div>
+          <div class="skill-card">
+            <h3>Inclusive urban development</h3>
+            <p>Exploring accessibility, participation and how different groups experience place.</p>
+          </div>
+          <div class="skill-card">
+            <h3>Geospatial methods</h3>
+            <p>Developing skills in spatial analysis, databases, remote sensing and web cartography.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-no">04 / TOOLS</div>
+          <h2>Tools & methods.</h2>
+        </div>
+
+        <div class="interest-list">
+          <span class="pill">ArcGIS Pro</span>
+          <span class="pill">QGIS</span>
+          <span class="pill">Cartography</span>
+          <span class="pill">Spatial Analysis</span>
+          <span class="pill">Geodata</span>
+          <span class="pill">Remote Sensing</span>
+          <span class="pill">PostGIS — learning</span>
+          <span class="pill">Python — learning</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-no">05 / CONTACT</div>
+          <h2>Let’s connect.</h2>
+        </div>
+
+        <p>
+          I am interested in GIS, urban development and opportunities to collaborate on geospatial
+          projects, student projects and future thesis work.
+        </p>
+
+        <div class="contact-links">
+          <!-- Replace # with your real links -->
+          <a href="#" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a href="https://github.com/hibahrabto" target="_blank" rel="noopener">GitHub ↗</a>
+          <!-- Optional: add your email later -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">© 2026 Hibah Rabto · GIS & Urban Planning Portfolio</div>
+  </footer>
+
 </body>
 </html>
